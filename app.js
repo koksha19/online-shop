@@ -2,8 +2,7 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
-
-const mongoConnect = require('./util/database').mongoConnect;
+const mongoose = require('mongoose');
 
 const app = express();
 
@@ -34,7 +33,13 @@ app.use(shopRoutes);
 
 app.use(notFoundController.getNotFound);
 
-mongoConnect(() => {
+mongoose
+    .connect('mongodb+srv://levbereza:kokshadatabases@cluster0.zpnre.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
+    .then(() => {
     app.listen(3000);
-});
+    })
+    .catch(err => {
+        console.log(err);
+    })
+
 

@@ -90,7 +90,7 @@ exports.postOrder = (req, res) => {
 
 exports.getOrders = (req, res) => {
     req.user
-        .getOrders()
+        .getOrders( )
         .then(orders => {
             res.render('shop/orders', {
                 pageTitle: 'Orders',
