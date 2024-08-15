@@ -12,8 +12,8 @@
                             <li class="card cart-product">
                                 <h1># <%= order._id %></h1>
                                 <ul>
-                                    <% order.items.forEach(product => { %>
-                                        <li><%= product.title %> (<%= product.quantity %>)</li>
+                                    <% order.products.forEach(product => { %>
+                                        <li><%= product.product.title %> (<%= product.quantity %>)</li>
                                     <% }) %>
                                 </ul>
                             </li>
