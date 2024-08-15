@@ -45,8 +45,9 @@ exports.getMainPage = (req, res) => {
 
 exports.getCart = (req, res) => {
     req.user
-        .getCart()
-        .then(products => {
+        .populate('cart.items.productId')
+        .then(user => {
+            const products = user.cart.items;
             res.render('shop/cart', {
                 pageTitle: 'Cart',
                 path: '/cart',
