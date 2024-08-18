@@ -9,6 +9,14 @@ exports.getLogin = (req, res) => {
     });
 }
 
+exports.getSignup = (req, res) => {
+    res.render('auth/signup', {
+        pageTitle: 'Sign up',
+        path: '/signup',
+        isAuthenticated: false,
+    });
+}
+
 exports.postLogin = (req, res) => {
     User.findById('66bc76eaabc3bfbeb49647c1')
         .then(user => {
@@ -22,6 +30,10 @@ exports.postLogin = (req, res) => {
         .catch(err => {
             console.log(err);
         });
+};
+
+exports.postSignup = (req, res) => {
+
 };
 
 exports.postLogout = (req, res) => {
