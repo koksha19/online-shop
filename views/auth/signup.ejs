@@ -16,6 +16,7 @@
             <label for="conf_password">Confirm Password</label>
             <input type="password" name="confirmedPassword" id="conf_password">
         </div>
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         <button class="btn" type="submit">Sign up</button>
     </form>
 </main>

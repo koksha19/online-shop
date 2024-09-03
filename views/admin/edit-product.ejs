@@ -17,12 +17,13 @@
                 <input type="text" name="description" id="title" value="<% if(editing) { %><%=product.description%><% } %>">
             </div>
             <div class="form-control">
-                <label for="title">Price</label>
+                   <label for="title">Price</label>
                 <input type="text" name="price" id="title" value="<% if(editing) { %><%=product.price%><% } %>">
             </div>
             <%if(editing) {%>
                 <input type="hidden" value="<%=product._id%>" name="productId">
             <% } %>
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn" type="submit"><% if(editing) { %> Edit Product <% } else { %>Add Product<% } %></button>
         </form>
     </main>
