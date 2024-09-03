@@ -3,7 +3,7 @@
 <link rel="stylesheet" href="/css/auth.css">
 <%- include('../includes/navigation.ejs') %>
 <main>
-    <form class="login-form" action="/login" method="POST">
+    <form class="login-form" action="/signup" method="POST">
         <div class="form-control">
             <label for="email">Email</label>
             <input type="text" name="email" id="email">
@@ -14,7 +14,7 @@
         </div>
         <div class="form-control">
             <label for="conf_password">Confirm Password</label>
-            <input type="conf_password" name="conf_password" id="conf_password">
+            <input type="password" name="confirmedPassword" id="conf_password">
         </div>
         <button class="btn" type="submit">Sign up</button>
     </form>
