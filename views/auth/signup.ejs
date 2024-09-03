@@ -3,6 +3,9 @@
 <link rel="stylesheet" href="/css/auth.css">
 <%- include('../includes/navigation.ejs') %>
 <main>
+    <% if (errorMessage) { %>
+        <div class="user-message user-message--error"><%= errorMessage %></div>
+    <% } %>
     <form class="login-form" action="/signup" method="POST">
         <div class="form-control">
             <label for="email">Email</label>
