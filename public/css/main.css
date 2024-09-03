@@ -137,3 +137,18 @@ main {
   justify-content: space-between;
   align-items: center;
 }
+
+.user-message {
+  margin: auto;
+  background: #4ed6ff;
+  border: 1px solid #5b70ff;
+  padding: 1rem;
+  border-radius: 3px;
+  width: 40%;
+  text-align: center;
+}
+
+.user-message--error {
+  background: #ff8486;
+  border: 1px solid #af0634;
+}
