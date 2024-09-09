@@ -157,7 +157,7 @@ exports.postResetPassword = (req, res) => {
                     return res.redirect('/reset-password');
                 }
                 user.token = token;
-                user.tokenExpirationDate = Date.now() + 3600000;
+                user.tokenExpirationDate = Date.now() + 100000000;
                 return user.save();
             })
             .then(() => {
@@ -184,8 +184,8 @@ exports.postResetPassword = (req, res) => {
                         ]
                     })
                 return request
-                    .then((result) => {
-                        console.log(result.body);
+                    .then(() => {
+                        console.log('Email sent');
                     })
                     .catch((err) => {
                         console.log(err.statusCode);
@@ -195,4 +195,25 @@ exports.postResetPassword = (req, res) => {
                 console.log(err);
             })
     });
+}
+
+exports.getNewPassword = (req, res) => {
+    const token = req.params.token;
+    User.findOne({ token: token, tokenExpirationDate: { $gt: Date.now() } })
+        .then(user => {
+            let message = req.flash('error');
+            if (message.length > 0) {
+                message = message[0];
+            } else {
+                message = null;
+            }
+            res.render('auth/new-password', {
+                pageTitle: 'New password',
+                path: '/new-password',
+                errorMessage: message,
+            });
+        })
+        .catch(err => {
+            console.log(err)
+        });
 }
