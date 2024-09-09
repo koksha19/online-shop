@@ -11,7 +11,7 @@ exports.getAddProduct = (req, res) => {
 
 exports.getAdminProducts = (req, res) => {
     Product
-        .find()
+        .find({userId: req.user._id})
         .then(products => {
             res.render('admin/products', {
                 prods: products,
