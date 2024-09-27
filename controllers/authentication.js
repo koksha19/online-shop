@@ -23,6 +23,9 @@ exports.getLogin = (req, res) => {
     pageTitle: "Login",
     path: "/login",
     errorMessage: message,
+    email: req.body.email,
+    password: req.body.password,
+    validationErrors: [],
   });
 };
 
@@ -37,6 +40,10 @@ exports.getSignup = (req, res) => {
     pageTitle: "Sign up",
     path: "/signup",
     errorMessage: message,
+    email: req.body.email,
+    password: req.body.password,
+    confirmedPassword: req.body.confirmedPassword,
+    validationErrors: [],
   });
 };
 
@@ -46,17 +53,18 @@ exports.postLogin = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     console.log(errors);
-    res.render("auth/login", {
-      pageTitle: "Login",
-      path: "/login",
-      errorMessage: errors.array()[0].msg,
-    });
   }
   User.findOne({ email: email })
     .then((user) => {
       if (!user) {
-        req.flash("error", "Invalid email or password");
-        return res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          pageTitle: "Login",
+          path: "/login",
+          errorMessage: "Invalid email or password",
+          email: email,
+          password: password,
+          validationErrors: errors.array(),
+        });
       }
       bcrypt.compare(password, user.password).then((doMatch) => {
         if (doMatch) {
@@ -67,8 +75,14 @@ exports.postLogin = (req, res) => {
             res.redirect("/");
           });
         }
-        req.flash("error", "Invalid email or password");
-        res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          pageTitle: "Login",
+          path: "/login",
+          errorMessage: "Invalid email or password",
+          email: email,
+          password: password,
+          validationErrors: errors.array(),
+        });
       });
     })
     .catch((err) => {
@@ -79,13 +93,18 @@ exports.postLogin = (req, res) => {
 exports.postSignup = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
+  const confirmedPassword = req.body.confirmedPassword;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.array()[0].msg);
+    console.log(errors.array()[0]);
     return res.status(422).render("auth/signup", {
       pageTitle: "Sign up",
       path: "/signup",
       errorMessage: errors.array()[0].msg,
+      email: email,
+      password: password,
+      confirmedPassword: confirmedPassword,
+      validationErrors: errors.array(),
     });
   }
 
