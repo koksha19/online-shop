@@ -3,6 +3,7 @@ require('dotenv').config();
 
 const bcrypt = require('bcryptjs');
 const Mailjet = require('node-mailjet');
+const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
 
@@ -71,6 +72,15 @@ exports.postLogin = (req, res) => {
 exports.postSignup = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        console.log(errors.array()[0].msg);
+        return res.status(422).render('auth/signup', {
+            pageTitle: 'Sign up',
+            path: '/signup',
+            errorMessage: errors.array()[0].msg,
+        });
+    }
 
     User.findOne({ email: email })
         .then((userDoc) => {
