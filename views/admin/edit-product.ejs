@@ -3,22 +3,41 @@
     <link rel="stylesheet" href="/css/product.css">
 <%- include('../includes/navigation.ejs') %>
     <main>
+        <% if (errorMessage) { %>
+            <div class="user-message user-message--error"><%= errorMessage %></div>
+        <% } %>
         <form class="product-form" action="/admin/<% if(editing) { %>edit-product<% } else { %>add-product<% } %>" method="POST">
             <div class="form-control">
                 <label for="title">Title</label>
-                <input type="text" name="title" id="title" value="<% if(editing) { %><%=product.title%><% } %>">
+                <input class="<%= validationErrors.find(e => e.path === 'title') ? 'invalid' : ''%>"
+                       type="text"
+                       name="title"
+                       id="title"
+                       value="<% if(editing) { %><%=product.title%><% } else if(validationErrors) {%><%= input.title %><% } %>">
             </div>
             <div class="form-control">
                 <label for="title">Image URL</label>
-                <input type="text" name="imageUrl" id="title" value="<% if(editing) { %><%=product.imageUrl%><% } %>">
+                <input class="<%= validationErrors.find(e => e.path === 'imageUrl') ? 'invalid' : ''%>"
+                       type="text"
+                       name="imageUrl"
+                       id="title"
+                       value="<% if(editing) { %><%=product.imageUrl%><% } else if(validationErrors) {%><%= input.imageUrl %><% } %>">
             </div>
             <div class="form-control">
                 <label for="title">Description</label>
-                <input type="text" name="description" id="title" value="<% if(editing) { %><%=product.description%><% } %>">
+                <input class="<%= validationErrors.find(e => e.path === 'description') ? 'invalid' : ''%>"
+                       type="text"
+                       name="description"
+                       id="title"
+                       value="<% if(editing) { %><%=product.description%><% } else if(validationErrors) {%><%= input.description %><% } %>">
             </div>
             <div class="form-control">
                    <label for="title">Price</label>
-                <input type="text" name="price" id="title" value="<% if(editing) { %><%=product.price%><% } %>">
+                <input class="<%= validationErrors.find(e => e.path === 'price') ? 'invalid' : ''%>"
+                       type="text"
+                       name="price"
+                       id="title"
+                       value="<% if(editing) { %><%=product.price%><% } else if(validationErrors) {%><%= input.price %><% } %>">
             </div>
             <%if(editing) {%>
                 <input type="hidden" value="<%=product._id%>" name="productId">
