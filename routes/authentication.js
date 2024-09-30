@@ -14,13 +14,17 @@ router.get("/signUp", authController.getSignup);
 router.post(
   "/login",
   [
-    check("email").isEmail().withMessage("Enter a valid email"),
+    check("email")
+      .isEmail()
+      .withMessage("Enter a valid email")
+      .normalizeEmail({ gmail_remove_dots: false }),
     check(
       "password",
       "A password has to be at least 5 characters long and should contain only numbers and letters",
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
+      .isAlphanumeric()
+      .trim(),
   ],
   authController.postLogin,
 );
@@ -31,6 +35,7 @@ router.post(
     check("email")
       .isEmail()
       .withMessage("Enter a valid email")
+      .normalizeEmail({ gmail_remove_dots: false })
       .custom((value) => {
         return User.findOne({ email: value }).then((userDoc) => {
           if (userDoc) {
@@ -43,13 +48,16 @@ router.post(
       "A password has to be at least 5 characters long and should contain only numbers and letters",
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
-    check("confirmedPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Passwords do not match");
-      }
-      return true;
-    }),
+      .isAlphanumeric()
+      .trim(),
+    check("confirmedPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Passwords do not match");
+        }
+        return true;
+      }),
   ],
   authController.postSignup,
 );
