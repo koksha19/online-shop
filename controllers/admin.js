@@ -9,7 +9,7 @@ exports.getAddProduct = (req, res) => {
     isAuthenticated: req.session.isLoggedIn,
     errorMessage: null,
     validationErrors: [],
-    input: {
+    product: {
       title: req.body.title,
       imageUrl: req.body.imageUrl,
       description: req.body.description,
@@ -54,7 +54,7 @@ exports.postAddProduct = (req, res) => {
       isAuthenticated: req.session.isLoggedIn,
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array(),
-      input: {
+      product: {
         title: product.title,
         imageUrl: product.imageUrl,
         description: product.description,
@@ -116,7 +116,13 @@ exports.postEditProduct = (req, res) => {
           pageTitle: "Edit",
           path: "/admin/edit-product",
           editing: true,
-          product: product,
+          product: {
+            title: updatedTitle,
+            imageUrl: updatedImage,
+            description: updatedDescription,
+            price: updatedPrice,
+            _id: prodId,
+          },
           isAuthenticated: req.session.isLoggedIn,
           errorMessage: errors.array()[0].msg,
           validationErrors: errors.array(),

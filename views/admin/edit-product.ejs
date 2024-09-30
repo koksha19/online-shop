@@ -13,7 +13,7 @@
                        type="text"
                        name="title"
                        id="title"
-                       value="<% if(editing) { %><%=product.title%><% } else if(validationErrors) {%><%= input.title %><% } %>">
+                       value="<% if(editing || validationErrors) { %><%=product.title%><% } %>">
             </div>
             <div class="form-control">
                 <label for="title">Image URL</label>
@@ -21,7 +21,7 @@
                        type="text"
                        name="imageUrl"
                        id="title"
-                       value="<% if(editing) { %><%=product.imageUrl%><% } else if(validationErrors) {%><%= input.imageUrl %><% } %>">
+                       value="<% if(editing || validationErrors) { %><%=product.imageUrl%><% } %>">
             </div>
             <div class="form-control">
                 <label for="title">Description</label>
@@ -29,7 +29,7 @@
                        type="text"
                        name="description"
                        id="title"
-                       value="<% if(editing) { %><%=product.description%><% } else if(validationErrors) {%><%= input.description %><% } %>">
+                       value="<% if(editing || validationErrors) { %><%=product.description%><% }  %>">
             </div>
             <div class="form-control">
                    <label for="title">Price</label>
@@ -37,7 +37,7 @@
                        type="text"
                        name="price"
                        id="title"
-                       value="<% if(editing) { %><%=product.price%><% } else if(validationErrors) {%><%= input.price %><% } %>">
+                       value="<% if(editing || validationErrors) { %><%=product.price%><% } %>">
             </div>
             <%if(editing) {%>
                 <input type="hidden" value="<%=product._id%>" name="productId">
