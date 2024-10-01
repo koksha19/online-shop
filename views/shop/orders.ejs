@@ -10,7 +10,7 @@
                     <% orders.forEach(order => { %>
                         <div class="order-items">
                             <li class="card cart-product">
-                                <h1># <%= order._id %></h1>
+                                <h1># <%= order._id %> - <a style="font-size: medium" href="/orders/<%= order._id %>">Invoice</a></h1>
                                 <ul>
                                     <% order.products.forEach(product => { %>
                                         <li><%= product.product.title %> (<%= product.quantity %>)</li>
