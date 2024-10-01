@@ -11,11 +11,6 @@ const productValidators = [
     .isLength({ min: 5, max: 30 })
     .withMessage("A title has to be 5 to 30 characters long")
     .trim(),
-  check("imageUrl")
-    .matches(/\.(jpg|png|jpeg|apng)$/i)
-    .withMessage(
-      "Your input doesn't contain an image or the format is inappropriate",
-    ),
   check("description")
     .isLength({ min: 15 })
     .withMessage("The description should contain at lease 15 characters"),

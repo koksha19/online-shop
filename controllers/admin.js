@@ -3,8 +3,6 @@ const { validationResult } = require("express-validator");
 
 const returnErrorPage = require("../middleware/returnErrorPage");
 
-const mongoose = require("mongoose");
-
 exports.getAddProduct = (req, res) => {
   res.render("admin/edit-product", {
     pageTitle: "Add product",
@@ -40,18 +38,27 @@ exports.getAdminProducts = (req, res, next) => {
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const price = req.body.price;
-  const imageUrl = req.body.imageUrl;
+  const image = req.file;
   const description = req.body.description;
+  console.log(image);
 
-  const product = new Product({
-    _id: new mongoose.Types.ObjectId("66df081fd92102c687456059"),
-    title: title,
-    price: price,
-    imageUrl: imageUrl,
-    description: description,
-    userId: req.user,
-  });
+  if (!image) {
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add product",
+      path: "/admin/add-product",
+      editing: false,
+      errorMessage: "No image found",
+      validationErrors: [],
+      product: {
+        title: title,
+        description: description,
+        price: price,
+      },
+    });
+  }
+
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     console.log(errors.array());
     return res.status(422).render("admin/edit-product", {
@@ -62,13 +69,22 @@ exports.postAddProduct = (req, res, next) => {
       errorMessage: errors.array()[0].msg,
       validationErrors: errors.array(),
       product: {
-        title: product.title,
-        imageUrl: product.imageUrl,
-        description: product.description,
-        price: product.price,
+        title: title,
+        description: description,
+        price: price,
       },
     });
   }
+
+  const imageUrl = image.path;
+
+  const product = new Product({
+    title: title,
+    price: price,
+    imageUrl: imageUrl,
+    description: description,
+    userId: req.user,
+  });
 
   product
     .save()
@@ -77,6 +93,7 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
+      console.log("Hello");
       returnErrorPage(err, next);
     });
 };
@@ -110,7 +127,7 @@ exports.getEditProduct = (req, res, next) => {
 exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
-  const updatedImage = req.body.imageUrl;
+  const image = req.file;
   const updatedDescription = req.body.description;
   const updatedPrice = req.body.price;
   const errors = validationResult(req);
@@ -120,14 +137,12 @@ exports.postEditProduct = (req, res, next) => {
       if (product.userId.toString() !== req.user._id.toString()) {
         return res.redirect("/");
       } else if (!errors.isEmpty()) {
-        console.log(errors.array());
         return res.status(422).render("admin/edit-product", {
           pageTitle: "Edit",
           path: "/admin/edit-product",
           editing: true,
           product: {
             title: updatedTitle,
-            imageUrl: updatedImage,
             description: updatedDescription,
             price: updatedPrice,
             _id: prodId,
@@ -140,7 +155,9 @@ exports.postEditProduct = (req, res, next) => {
 
       product.title = updatedTitle;
       product.price = updatedPrice;
-      product.image = updatedImage;
+      if (image) {
+        product.imageUrl = image.path;
+      }
       product.description = updatedDescription;
 
       return product.save().then(() => {
