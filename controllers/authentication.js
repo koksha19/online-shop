@@ -6,6 +6,7 @@ const Mailjet = require("node-mailjet");
 const { validationResult } = require("express-validator");
 
 const User = require("../models/user");
+const returnErrorPage = require("../middleware/returnErrorPage");
 
 const mailjet = new Mailjet({
   apiKey: process.env.MJ_APIKEY_PUBLIC,
@@ -47,7 +48,7 @@ exports.getSignup = (req, res) => {
   });
 };
 
-exports.postLogin = (req, res) => {
+exports.postLogin = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const errors = validationResult(req);
@@ -86,11 +87,11 @@ exports.postLogin = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      returnErrorPage(err, next);
     });
 };
 
-exports.postSignup = (req, res) => {
+exports.postSignup = (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const confirmedPassword = req.body.confirmedPassword;
@@ -144,6 +145,9 @@ exports.postSignup = (req, res) => {
         .catch((err) => {
           console.log(err.statusCode);
         });
+    })
+    .catch((err) => {
+      returnErrorPage(err, next);
     });
 };
 
@@ -167,7 +171,7 @@ exports.getResetPassword = (req, res) => {
   });
 };
 
-exports.postResetPassword = (req, res) => {
+exports.postResetPassword = (req, res, next) => {
   crypto.randomBytes(32, (err, buf) => {
     if (err) {
       console.log(err);
@@ -214,12 +218,12 @@ exports.postResetPassword = (req, res) => {
           });
       })
       .catch((err) => {
-        console.log(err);
+        returnErrorPage(err, next);
       });
   });
 };
 
-exports.getNewPassword = (req, res) => {
+exports.getNewPassword = (req, res, next) => {
   const token = req.params.token;
   User.findOne({ token: token, tokenExpirationDate: { $gt: Date.now() } })
     .then((user) => {
@@ -238,11 +242,11 @@ exports.getNewPassword = (req, res) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      returnErrorPage(err, next);
     });
 };
 
-exports.postNewPassword = (req, res) => {
+exports.postNewPassword = (req, res, next) => {
   const newPassword = req.body.password;
   const userId = req.body.userId;
   const token = req.body.token;
@@ -267,6 +271,6 @@ exports.postNewPassword = (req, res) => {
       res.redirect("/login");
     })
     .catch((err) => {
-      console.log(err);
+      returnErrorPage(err, next);
     });
 };

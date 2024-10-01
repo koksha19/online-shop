@@ -1,6 +1,10 @@
 const Product = require("../models/product");
 const { validationResult } = require("express-validator");
 
+const returnErrorPage = require("../middleware/returnErrorPage");
+
+const mongoose = require("mongoose");
+
 exports.getAddProduct = (req, res) => {
   res.render("admin/edit-product", {
     pageTitle: "Add product",
@@ -18,7 +22,7 @@ exports.getAddProduct = (req, res) => {
   });
 };
 
-exports.getAdminProducts = (req, res) => {
+exports.getAdminProducts = (req, res, next) => {
   Product.find({ userId: req.user._id })
     .then((products) => {
       res.render("admin/products", {
@@ -28,16 +32,19 @@ exports.getAdminProducts = (req, res) => {
         isAuthenticated: req.session.isLoggedIn,
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      returnErrorPage(err, next);
+    });
 };
 
-exports.postAddProduct = (req, res) => {
+exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
   const price = req.body.price;
   const imageUrl = req.body.imageUrl;
   const description = req.body.description;
 
   const product = new Product({
+    _id: new mongoose.Types.ObjectId("66df081fd92102c687456059"),
     title: title,
     price: price,
     imageUrl: imageUrl,
@@ -70,11 +77,11 @@ exports.postAddProduct = (req, res) => {
       res.redirect("/admin/products");
     })
     .catch((err) => {
-      console.log(err);
+      returnErrorPage(err, next);
     });
 };
 
-exports.getEditProduct = (req, res) => {
+exports.getEditProduct = (req, res, next) => {
   const editMode = req.query.edit;
   if (!editMode) {
     res.redirect("/");
@@ -95,10 +102,12 @@ exports.getEditProduct = (req, res) => {
         validationErrors: [],
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      returnErrorPage(err, next);
+    });
 };
 
-exports.postEditProduct = (req, res) => {
+exports.postEditProduct = (req, res, next) => {
   const prodId = req.body.productId;
   const updatedTitle = req.body.title;
   const updatedImage = req.body.imageUrl;
@@ -139,14 +148,18 @@ exports.postEditProduct = (req, res) => {
         res.redirect("/admin/products");
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      returnErrorPage(err, next);
+    });
 };
 
-exports.postDelete = (req, res) => {
+exports.postDelete = (req, res, next) => {
   const prodId = req.body.productId;
   Product.deleteOne({ _id: prodId, userId: req.user._id })
     .then(() => {
       res.redirect("/admin/products");
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      returnErrorPage(err, next);
+    });
 };
