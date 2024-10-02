@@ -32,6 +32,7 @@
     "node-mailjet": "^6.0.6",
     "nodemailer": "^6.9.15",
     "nodemailer-sendgrid-transport": "^0.2.0",
+    "pdfkit": "^0.15.0",
     "pug": "^2.0.3",
     "sequelize": "^6.37.3"
   }
