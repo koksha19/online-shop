@@ -6,13 +6,31 @@ const Product = require("../models/product");
 const Order = require("../models/order");
 const returnErrorPage = require("../middleware/returnErrorPage");
 
+const ITEMS_PER_PAGE = 1;
+
 exports.getShop = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let productsNumber;
   Product.find()
+    .countDocuments()
+    .then((productsCount) => {
+      productsNumber = productsCount;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "Products",
-        path: "/products",
+        path: "/product-list",
+        productsNumber: productsNumber,
+        currentPage: page,
+        lastPage: Math.ceil(productsNumber / ITEMS_PER_PAGE),
+        hasNextPage: ITEMS_PER_PAGE * page < productsNumber,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
       });
     })
     .catch((err) => {
@@ -36,12 +54,28 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getMainPage = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let productsNumber;
   Product.find()
+    .countDocuments()
+    .then((productsCount) => {
+      productsNumber = productsCount;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        productsNumber: productsNumber,
+        currentPage: page,
+        lastPage: Math.ceil(productsNumber / ITEMS_PER_PAGE),
+        hasNextPage: ITEMS_PER_PAGE * page < productsNumber,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
       });
     })
     .catch((err) => {
